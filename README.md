@@ -5,6 +5,10 @@ A professional full-stack application designed to manage book rentals, tracking,
 ## 🚀 Project Overview
 This system allows users to browse available books, rent them, and view their rental history. It features role-based access for Admins and regular Users.
 
+## 📥 Download Live Application
+You can download and test the mobile application (APK) from the link below:
+- **[Download APK (Google Drive)](https://drive.google.com/file/d/1We-L9hpXjU-tMuwqFHfCXYHw5I-uv_mF/view?usp=sharing)**
+
 ## 🛠 Technology Stack
 ### Backend (Node.js)
 - [cite_start]**Framework:** Express.js for REST APIs [cite: 12]
