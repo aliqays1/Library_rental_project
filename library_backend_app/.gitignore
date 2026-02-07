@@ -1,0 +1,42 @@
+# --- SENSITIVE DATA (CRITICAL) ---
+.env
+*.log
+node_modules/
+
+# --- FLUTTER / DART ---
+# Miscellaneous
+*.temp
+*.lock
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+
+# Android-specific
+.gradle/
+local.properties
+*.apk
+*.aab
+
+# iOS-specific
+.generated/
+Pods/
+DerivedData/
+
+# --- BACKEND / NODE.JS ---
+# Dependency directories
+dist/
+coverage/
+
+# --- IDEs & SYSTEM ---
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.DS_Store

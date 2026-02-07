@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibraRead Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; background: #f8f9fa; }
+        .sidebar { width: 250px; background: #1a1a1a; color: white; height: 100vh; padding: 20px; position: fixed; }
+        .main-content { margin-left: 250px; padding: 40px; width: 100%; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        
+        th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: left; vertical-align: middle; }
+        th { background: #f4f4f4; color: #666; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        .book-img { width: 45px; height: 65px; object-fit: cover; border-radius: 4px; background: #eee; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .status { 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 11px; 
+            font-weight: bold; 
+            display: inline-block; 
+            text-align: center;
+            min-width: 80px;
+        }
+        .available { background: #e6fffa !important; color: #047481 !important; }
+        .out { background: #fff5f5 !important; color: #c53030 !important; }
+        .coming { background: #fffaf0 !important; color: #9b6400 !important; }
+
+        .rating-stars { color: #f1c40f; font-weight: bold; }
+        .btn-delete { color: #e53e3e; text-decoration: none; font-weight: bold; font-size: 13px; }
+        .btn-edit { color: #6200ee; text-decoration: none; font-weight: bold; font-size: 13px; }
+        
+        .actions-flex { display: flex; align-items: center; gap: 15px; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, select, textarea { padding: 12px; border: 1px solid #ddd; border-radius: 6px; width: 100%; box-sizing: border-box; font-size: 14px; font-family: inherit; }
+        
+        /* Added specific styling for the description box */
+        textarea { grid-column: span 2; min-height: 100px; resize: vertical; }
+        
+        .submit-btn { background: #6200ee; color: white; border: none; padding: 14px; border-radius: 6px; cursor: pointer; grid-column: span 2; font-weight: bold; font-size: 16px; transition: background 0.3s; }
+        .stats-row { display: flex; gap: 20px; margin-bottom: 20px; }
+        .stat-card { background: #6200ee; color: white; padding: 15px 25px; border-radius: 10px; flex: 1; }
+        nav ul { list-style: none; padding: 0; }
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar', { activePage: 'dashboard' }) %>
+
+    <div class="main-content">
+        <div class="stats-row">
+            <div class="stat-card">
+                <small>Total Books in Inventory</small>
+                <h2 style="margin: 5px 0;"><%= books.length %></h2>
+            </div>
+        </div>
+
+        <h1>Inventory Management</h1>
+
+        <div class="card">
+            <h3>Add New Book to Library</h3>
+            <form action="/api/admin/add-book" method="POST" enctype="multipart/form-data" class="form-grid">
+                <input type="text" name="title" placeholder="Book Title" required>
+                <input type="text" name="author" placeholder="Author" required>
+                <input type="number" name="stockCount" placeholder="Stock Count" required>
+                <input type="number" name="rating" placeholder="Rating (1-5)" min="1" max="5" step="0.1" required>
+
+                <select name="category" required>
+                    <option value="" disabled selected>Select Category</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Sci-Fi">Sci-Fi</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Fiction">Fiction</option>
+                </select>
+
+                <select name="availabilityStatus" required>
+                    <option value="Available">Available</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                    <option value="Coming Soon">Coming Soon</option>
+                </select>
+
+                <textarea name="description" placeholder="What is this book about? Enter a description..."></textarea>
+
+                <div style="grid-column: span 2;">
+                    <label style="font-size: 12px; color: #666; display: block; margin-bottom: 5px;">Cover Image:</label>
+                    <input type="file" name="coverImage" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Save new Book</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Current Inventory</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cover</th>
+                        <th>Title & Author</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (books.length === 0) { %>
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: #999; padding: 40px;">No books found in database.</td>
+                        </tr>
+                    <% } %>
+
+                    <% books.forEach(book => { %>
+                    <tr>
+                        <td>
+                            <img src="/<%= book.coverImage.replace(/\\/g, '/') %>" class="book-img" alt="cover" onerror="this.src='https://via.placeholder.com/45x65?text=No+Img'">
+                        </td>
+                        <td>
+                            <strong><%= book.title %></strong><br>
+                            <span style="color: #888; font-size: 12px;"><%= book.author %></span>
+                        </td>
+                        <td><%= book.category || 'N/N' %></td>
+                        <td style="font-weight: bold; color: #333;"><%= book.stock || 0 %></td>
+                        <td>
+                            <span class="rating-stars">⭐ <%= (book.rating && !isNaN(book.rating)) ? book.rating.toFixed(1) : '0.0' %></span>
+                        </td>
+                        <td>
+                            <% 
+                               let statusClass = 'out'; 
+                               if(book.availabilityStatus === 'Available') statusClass = 'available';
+                               if(book.availabilityStatus === 'Coming Soon') statusClass = 'coming';
+                            %>
+                            <span class="status <%= statusClass %>">
+                                <%= book.availabilityStatus || 'Unknown' %>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="actions-flex">
+                                <a href="/admin/edit-book/<%= book._id %>" class="btn-edit">Edit</a>
+                                <a href="/api/admin/delete-book/<%= book._id %>" class="btn-delete" onclick="return confirm('Delete permanently?')">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

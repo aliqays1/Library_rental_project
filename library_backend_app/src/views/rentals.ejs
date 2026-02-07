@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rentals Management - LibraRead</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; background: #f8f9fa; }
+        .sidebar { width: 250px; background: #1a1a1a; color: white; height: 100vh; padding: 20px; position: fixed; }
+        .main-content { margin-left: 250px; padding: 40px; width: 100%; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #f4f4f4; color: #666; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .status-active { background: #e6fffa; color: #047481; }
+        .status-overdue { background: #fff5f5; color: #c53030; }
+        .nav-link { color: white; text-decoration: none; font-weight: bold; }
+        .nav-link.active { color: #6200ee !important; }
+        .renter-name { font-weight: 600; color: #333; }
+        .contact-info { font-size: 13px; color: #555; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar', { activePage: 'rentals' }) %>
+
+    <div class="main-content">
+        <h1>Active Rentals</h1>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Renter</th>
+                        <th>Contact</th>
+                        <th>Rented Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (rentals.length === 0) { %>
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #999; padding: 40px;">No active rentals found.</td>
+                        </tr>
+                    <% } %>
+
+                    <% rentals.forEach(rental => { %>
+                    <tr>
+                        <td><strong><%= rental.bookTitle %></strong></td>
+                        
+                        <td class="renter-name"><%= rental.renterName %></td>
+                        
+                        <td class="contact-info">
+                            <i class="fas fa-envelope" style="font-size: 11px;"></i> <%= rental.email %><br>
+                            <i class="fas fa-phone" style="font-size: 11px;"></i> <%= rental.phone %>
+                        </td>
+                        
+                        <td><%= rental.rentDate %></td>
+                        
+                        <td><%= rental.returnDate %></td>
+                        
+                        <td>
+                            <% 
+                                const statusClass = (rental.status === 'Active') ? 'status-active' : 'status-overdue';
+                            %>
+                            <span class="status-badge <%= statusClass %>"><%= rental.status %></span>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

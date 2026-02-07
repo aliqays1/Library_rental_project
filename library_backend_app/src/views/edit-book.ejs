@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book - LibraRead</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, select, textarea { padding: 12px; border: 1px solid #ddd; border-radius: 6px; width: 100%; box-sizing: border-box; font-family: inherit; }
+        
+        /* Description styling */
+        textarea { grid-column: span 2; min-height: 120px; resize: vertical; }
+        
+        label { font-size: 12px; color: #666; margin-bottom: 5px; display: block; font-weight: bold; }
+        .submit-btn { background: #6200ee; color: white; border: none; padding: 14px; border-radius: 6px; cursor: pointer; grid-column: span 2; font-weight: bold; margin-top: 10px; font-size: 16px; }
+        .cancel-link { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 14px; }
+        .current-img { width: 60px; height: 80px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; border: 1px solid #ddd; display: block; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Edit Book Details</h2>
+        <form action="/api/admin/update-book/<%= book._id %>" method="POST" enctype="multipart/form-data" class="form-grid">
+            
+            <div style="grid-column: span 1;">
+                <label>Title</label>
+                <input type="text" name="title" value="<%= book.title %>" required>
+            </div>
+
+            <div style="grid-column: span 1;">
+                <label>Author</label>
+                <input type="text" name="author" value="<%= book.author %>" required>
+            </div>
+            
+            <div style="grid-column: span 1;">
+                <label>Stock Count</label>
+                <input type="number" name="stockCount" value="<%= book.stock %>" required>
+            </div>
+
+            <div style="grid-column: span 1;">
+                <label>Rating (1-5)</label>
+                <input type="number" name="rating" value="<%= book.rating %>" min="1" max="5" step="0.1" required>
+            </div>
+
+            <div style="grid-column: span 1;">
+                <label>Category</label>
+                <select name="category" required>
+                    <option value="Mystery" <%= book.category === 'Mystery' ? 'selected' : '' %>>Mystery</option>
+                    <option value="Sci-Fi" <%= book.category === 'Sci-Fi' ? 'selected' : '' %>>Sci-Fi</option>
+                    <option value="Non-Fiction" <%= book.category === 'Non-Fiction' ? 'selected' : '' %>>Non-Fiction</option>
+                    <option value="Fiction" <%= book.category === 'Fiction' ? 'selected' : '' %>>Fiction</option>
+                </select>
+            </div>
+
+            <div style="grid-column: span 1;">
+                <label>Status</label>
+                <select name="availabilityStatus">
+                    <option value="Available" <%= book.availabilityStatus === 'Available' ? 'selected' : '' %>>Available</option>
+                    <option value="Out of Stock" <%= book.availabilityStatus === 'Out of Stock' ? 'selected' : '' %>>Out of Stock</option>
+                    <option value="Coming Soon" <%= book.availabilityStatus === 'Coming Soon' ? 'selected' : '' %>>Coming Soon</option>
+                </select>
+            </div>
+
+            <div style="grid-column: span 2;">
+                <label>Book Description (What is this book about?)</label>
+                <textarea name="description" placeholder="Enter book summary..."><%= book.description %></textarea>
+            </div>
+
+            <div style="grid-column: span 2;">
+                <label>Cover Image (Leave empty to keep current)</label>
+                <% if (book.coverImage) { %>
+                    <img src="/<%= book.coverImage.replace(/\\/g, '/') %>" class="current-img" alt="current cover">
+                <% } %>
+                <input type="file" name="coverImage">
+            </div>
+
+            <button type="submit" class="submit-btn">Update Book</button>
+        </form>
+        <a href="/admin/dashboard" class="cancel-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

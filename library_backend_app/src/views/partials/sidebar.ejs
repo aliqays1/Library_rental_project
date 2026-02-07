@@ -1,0 +1,32 @@
+<% if (typeof activePage === 'undefined') { var activePage = 'dashboard'; } %>
+<div class="sidebar">
+    <h2>LibraRead</h2>
+    <p style="color: #888; font-size: 13px;">Admin Control Panel</p>
+    <hr style="border: 0.5px solid #333; margin: 20px 0;">
+    <nav>
+        <ul>
+            <li style="margin-bottom: 15px;">
+                <a href="/admin/dashboard" class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>">
+                    <i class="fas fa-book"></i> Books Management
+                </a>
+            </li>
+            <li style="margin-bottom: 15px;">
+                <a href="/admin/users" class="nav-link <%= activePage === 'users' ? 'active' : '' %>">
+                    <i class="fas fa-users"></i> User List
+                </a>
+            </li>
+            <li style="margin-bottom: 15px;">
+                <a href="/admin/rentals" class="nav-link <%= activePage === 'rentals' ? 'active' : '' %>">
+                    <i class="fas fa-history"></i> Rentals
+                </a>
+            </li>
+        </ul>
+        <br>
+        <a href="/admin/login" style="color: #ff5252; text-decoration: none; font-weight: bold;">Logout</a>
+    </nav>
+</div>
+
+<style>
+    .nav-link { color: white; text-decoration: none; font-weight: bold; }
+    .nav-link.active { color: #6200ee !important; }
+</style>

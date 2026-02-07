@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management - LibraRead</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; background: #f8f9fa; }
+        .sidebar { width: 250px; background: #1a1a1a; color: white; height: 100vh; padding: 20px; position: fixed; }
+        .main-content { margin-left: 250px; padding: 40px; width: 100%; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #f4f4f4; color: #666; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        .btn-delete { color: #e53e3e; text-decoration: none; font-weight: bold; font-size: 13px; border: none; background: none; cursor: pointer; }
+        .nav-link { color: white; text-decoration: none; font-weight: bold; }
+        .nav-link.active { color: #6200ee !important; }
+        .role-admin { color: #6200ee; font-weight: bold; }
+        .role-user { color: #666; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar', { activePage: 'users' }) %>
+
+    <div class="main-content">
+        <h1>Registered Users</h1>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.username %></td>
+                        <td><%= user.email %></td>
+                        <td>
+                            <span class="<%= user.role === 'admin' ? 'role-admin' : 'role-user' %>">
+                                <%= user.role %>
+                            </span>
+                        </td>
+                        <td><%= user.createdAt.toDateString() %></td>
+                        <td>
+                            <a href="/api/admin/delete-user/<%= user._id %>" 
+                               class="btn-delete" 
+                               onclick="return confirm('Delete this user permanently?')">
+                               Delete User
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
